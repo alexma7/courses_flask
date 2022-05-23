@@ -1,0 +1,7 @@
+flask
+flask_restful
+flask_migrate
+importlib_metadata
+flask_swagger_ui
+marshmallow_sqlalchemy
+flask_admin

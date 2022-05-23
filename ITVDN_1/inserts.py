@@ -1,4 +1,6 @@
 from datetime import date
+from unicodedata import name
+from ITVDN_1.src.models import Actor
 
 from src import db
 from src.models import Film
@@ -70,6 +72,13 @@ def populate_films():
         rating=8.1,
     )
 
+    daniel_radcliffe = Actor(name='daniel_radcliffe', birthday=date(1989, 7, 23) is_active=True)
+    emma_watson = Actor(name='emma_watson', birthday=date(1990, 7, 23) is_active=True)
+    rupert_grint = Actor(name='rupert_grint', birthday=date(1988, 7, 23) is_active=True)
+    richard_harris = Actor(name='richard_harris', birthday=date(1930, 7, 23) is_active=True)
+    michael_gambon = Actor(name='michael_gambon', birthday=date(1940, 7, 23) is_active=True)
+    alan_rickman = Actor(name='alan_rickman', birthday=date(1946, 7, 23) is_active=True)
+
     db.session.add(harry_potter_and_ph_stone)
     db.session.add(harry_potter_and_ch_s)
     db.session.add(harry_potter_and_priz_az)
@@ -79,6 +88,13 @@ def populate_films():
     db.session.add(harry_potter_and_deathly_hallows_1)
     db.session.add(harry_potter_and_deathly_hallows_2)
 
+    db.session.add(daniel_radcliffe)
+    db.session.add(emma_watson)
+    db.session.add(rupert_grint)
+    db.session.add(richard_harris)
+    db.session.add(michael_gambon)
+    db.session.add(alan_rickman)
+    
     db.session.commit()
     db.session.close()
 

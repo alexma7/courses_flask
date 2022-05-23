@@ -1,8 +1,11 @@
 from datetime import datetime
 
 from typing import List
+from xml.dom import ValidationErr
 from flask import request
 from flask_restful import Resource
+from marshmallow import ValidationError
+from ITVDN_1.src.schemas import FilmsSchema
 
 from src import api, db
 from src.models import Film
@@ -15,16 +18,28 @@ class Smoke(Resource):
 
 
 class FilmListApi(Resource):
+    film_schema = FilmsSchema()
+
     def get(self, uuid=None):
         if not uuid:
             films = db.session.query(Film).all()
-            return [f.to_dict() for f in films], 200
+            #return [f.to_dict() for f in films], 200  # из 2 урока
+            return self.film_schema.dump(films, many=True), 200
         film = db.session.query(Film).filter_by(uuid=uuid).first()
         if not film:
             return '', 404
-        return film.to_dict(), 200
+        #return film.to_dict(), 200 # из 2 урока
+        return  self.film_schema.dump(film), 200
 
     def post(self):
+        # try:
+        #     film = self.film_schema.load(request.json, session=db.session)
+        # except ValidationError as e:
+        #     return {'message': str(e)}, 400
+        # db.session.add(film)
+        # db.session.commit()
+        # return self.film_schema.dump(film), 201
+        # из 2 урока
         #return request.json
         film_json = request.json
         if not film_json:
@@ -45,6 +60,18 @@ class FilmListApi(Resource):
         return {'message': 'Created successfull'}, 201
 
     def put(self, uuid):
+        # film = db.session.query(Film).filter_by(uuid=uuid).first()
+        # if not film:
+        #     return "", 404
+        # try:
+        #     film = self.film_schema.load(request.json, instance=film, session=db.session)
+        # except ValidationError as e:
+        #     return {'message': str(e)}, 400
+        # db.session.add(film)
+        # db.session.commit()
+        # return self.film_schema.dump(film), 200
+
+        # 2 урок
         film_json = request.json
         if not film_json:
             return {'message': 'Wrong data'}, 400
@@ -59,8 +86,6 @@ class FilmListApi(Resource):
                     rating=film_json.get('rating')
                 )
             )
-
-
             db.session.commit()
         except (ValueError, KeyError):
             return {'message': 'Wrong data'}, 400

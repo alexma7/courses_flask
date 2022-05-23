@@ -1,5 +1,7 @@
+from importlib_metadata import method_cache
 import config as config
-from flask import Flask
+import os
+from flask import Flask, request, render_template
 from flask_migrate import Migrate
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
@@ -13,7 +15,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 api = Api(app)
 
-from . import routes, models
+
 
 SWAGGER_URL = '/swagger'
 API_URL = '/static/swagger.json'
@@ -26,3 +28,17 @@ SWAGGER_BLUEPRINT = get_swaggerui_blueprint(
 )
 app.register_blueprint(SWAGGER_BLUEPRINT, url_prefix=SWAGGER_URL)
 
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    return  render_template('index.html') #os.path.dirname(__file__)
+
+@app.route('/greeting', methods=['POST'])
+def greeting():
+    name = request.form.get('name')
+    if not name:
+        return 'Please, enter name'
+    return render_template('greeting.html', name=name)
+
+
+
+from . import routes, models
