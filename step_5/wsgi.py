@@ -3,6 +3,7 @@ from enum import unique
 import flask
 import flask_sqlalchemy
 import flask_migrate
+import werkzeug.security
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 import sqlalchemy
@@ -45,8 +46,8 @@ def get_auth_view():
 def set_auth_view():
     email = flask.request.form.get('email')
     password = flask.request.form.get('password')
-    user = db.session.query(UserModel).filter_by(email=email, password=password).first()
-    if user is not None:
+    user = db.session.query(UserModel).filter_by(email=email).first()
+    if user is not None and werkzeug.security.check_password_hash(user.password, password):
         flask.session['is_login_successfull'] = True
         return 'Успешная авторизация'
     return 'Неправильный логин или пароль'
@@ -62,7 +63,8 @@ def post_register_view():
     email = flask.request.form.get('email')
     password = flask.request.form.get('password')
     name = flask.request.form.get('name')
-    user = UserModel(email=email, password=password, name=name)
+    password_hash = werkzeug.security.generate_password_hash(password)
+    user = UserModel(email=email, password=password_hash, name=name)
     
     db.session.add(user)
     try:
