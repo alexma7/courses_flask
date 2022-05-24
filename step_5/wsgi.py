@@ -43,7 +43,8 @@ def get_auth_view():
 def set_auth_view():
     email = flask.request.form.get('email')
     password = flask.request.form.get('password')
-    if password == 'flask' and  '@rambler.ru' in email:
+    user = db.session.query(UserModel).filter_by(email=email, password=password).first()
+    if user is not None:
         flask.session['is_login_successfull'] = True
         return 'Успешная авторизация'
     return 'Неправильный логин или пароль'
