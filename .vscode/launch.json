@@ -12,7 +12,7 @@
             "module": "flask",
             "env": {
                 // "FLASK_APP": "ITVDN_3/wsgi.py",
-                "FLASK_APP": "step_4/wsgi.py",
+                "FLASK_APP": "step_5/wsgi.py",
                 "FLASK_ENV": "development"
             },
             "args": [

@@ -1,3 +1,4 @@
+#from crypt import methods
 import flask
 import flask_sqlalchemy
 import flask_migrate
@@ -23,22 +24,45 @@ class UserModel(db.Model):
 admin.add_view(ModelView(UserModel, db.session))
 
 
-@app.route('/set')
+@app.route('/set', methods=['GET', 'POST'])
 def set_view():
+    #return 'Удалено'  
     if flask.request.method == 'GET':
         return flask.render_template('set.html')
-
-    flask.session['test_task'] = 'mavar' # записываем в куки
+    flask.session['name'] = flask.request.form.get('name') # записываем в куки
     return flask.redirect(flask.url_for('display_view'))
+
+
+@app.route('/auth')
+def get_auth_view():
+     flask.session['is_login_successfull'] = True
+     return flask.render_template('auth.html')
+
+
+@app.route('/auth' , methods=['POST'])
+def set_auth_view():
+    email = flask.request.form.get('email')
+    password = flask.request.form.get('password')
+    if password == 'flask' and  '@rambler.ru' in email:
+        flask.session['is_login_successfull'] = True
+        return 'Успешная авторизация'
+    return 'Неправильный логин или пароль'
+
+     
+
 
 @app.route('/display')
 def display_view():
-    test_task = flask.session.get('test_task', 'Not found') # получаем куки
-    return test_task
+    is_login_successfull = flask.session.get('is_login_successfull', False) # получаем куки
+    if is_login_successfull:
+        return f'Доступ разрешен'
+    return f'Доступ запрещен'
+   # return 'Удалено' 
+ 
 
 @app.route('/reset')
 def reset_view():
-    flask.session.pop('test_task', None)  # удаляем куки
+    flask.session.clear()  # удаляем куки
     return 'Удалено'      
 
 
