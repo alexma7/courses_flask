@@ -5,3 +5,4 @@ importlib_metadata
 flask_swagger_ui
 marshmallow_sqlalchemy
 flask_admin
+pymysql
